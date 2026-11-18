@@ -1,4 +1,5 @@
-#ifndef CHIP8STATE
+#ifndef CHIP8STATE_H
+#define CHIP8STATE_H
 
 #include<stdint.h>
 
@@ -38,7 +39,7 @@ typedef struct Chip8State {
 
     uint8_t stackPointer;
 
-    uint8_t dealyTimer;
+    uint8_t delayTimer;
     uint8_t soundTimer;
 
     uint8_t inputKeys[KEY_COUNT];
@@ -49,6 +50,5 @@ typedef struct Chip8State {
 } Chip8State;
 
 void initChip8State(Chip8State* state);
-
-
+void parseNextOpcode(Chip8State* state);
 #endif
