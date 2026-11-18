@@ -9,6 +9,7 @@
 #define KEY_COUNT 16
 #define DISPLAY_SIZE 32*64
 #define FONT_START 0x50
+#define MEMORY_START 0x200
 
 static const uint8_t font[80] = {
     0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
@@ -51,4 +52,5 @@ typedef struct Chip8State {
 
 void initChip8State(Chip8State* state);
 void parseNextOpcode(Chip8State* state);
+void loadFileToMemory(const char* fileName, Chip8State* state);
 #endif

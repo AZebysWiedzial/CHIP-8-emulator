@@ -31,6 +31,9 @@ void loop(Chip8State* state, graphicalContext* gc)
 
         handleEvents(state, &quit);
 
+        for (int i = 0; i < 10; i++) parseNextOpcode(state);
+        
+
         if(state->delayTimer > 0) state->delayTimer--;
         if(state->soundTimer > 0) state->soundTimer--;
 
@@ -49,7 +52,8 @@ int main()
 
     graphicalContext gc;
     initGraphics(&gc);
-    updateDisplay(&state, &gc);
+
+    loadFileToMemory("IBM Logo.ch8", &state);
 
     loop(&state, &gc);
 
