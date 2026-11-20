@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <time.h>
 
-void initChip8State(Chip8State* state)
+void initChip8State(chip8State* state)
 {
     memset(state, 0, sizeof(*state));
     memcpy(&state->memory[FONT_START], font, sizeof(font));
@@ -16,7 +16,7 @@ void initChip8State(Chip8State* state)
     srand(time(NULL));
 }
 
-void parseNextOpcode(Chip8State* state)
+void parseNextOpcode(chip8State* state)
 {
     state->opcode = (state->memory[state->PC] << 8) | state->memory[state->PC + 1];
     // printf("%u\n", state->opcode);
@@ -222,19 +222,19 @@ void parseNextOpcode(Chip8State* state)
     }
 }
 
-void pushPC(Chip8State* state)
+void pushPC(chip8State* state)
 {
     state->stackPointer++;
     state->stack[state->stackPointer] = state->PC;
 }
 
-void popPC(Chip8State* state)
+void popPC(chip8State* state)
 {
     state->PC = state->stack[state->stackPointer];
     state->stackPointer--;
 }
 
-void resetInputKeys(Chip8State* state)
+void resetInputKeys(chip8State* state)
 {
     for (int i = 0; i < KEY_COUNT; i++)
     {
@@ -242,7 +242,7 @@ void resetInputKeys(Chip8State* state)
     }
 }
 
-void loadFileToMemory(const char* fileName, Chip8State* state)
+void loadFileToMemory(const char* fileName, chip8State* state)
 {
     strcpy((char*)(state->fileName), (char*)fileName);
 
@@ -261,7 +261,7 @@ void loadFileToMemory(const char* fileName, Chip8State* state)
     printf("File name: %s\n", state->fileName);
 }
 
-void clearDisplay(Chip8State* state)
+void clearDisplay(chip8State* state)
 {
     for (int i = 0; i < DISPLAY_SIZE; i++)
     {
@@ -269,7 +269,7 @@ void clearDisplay(Chip8State* state)
     }
 }
 
-void drawSprite(Chip8State* state, uint8_t x, uint8_t y, uint8_t height)
+void drawSprite(chip8State* state, uint8_t x, uint8_t y, uint8_t height)
 {
     uint8_t startX = x % DISPLAY_WIDTH;
     uint8_t startY = y % DISPLAY_HEIGHT;
@@ -298,7 +298,7 @@ void drawSprite(Chip8State* state, uint8_t x, uint8_t y, uint8_t height)
     }
 }
 
-void printInputKeys(Chip8State* state)
+void printInputKeys(chip8State* state)
 {
     printf("Input keys:\n");
     for (int i = 0; i < 4; i++)
@@ -312,13 +312,13 @@ void printInputKeys(Chip8State* state)
     }
 }
 
-void resetChip8State(Chip8State* state, char* fileName)
+void resetChip8State(chip8State* state, char* fileName)
 {
     initChip8State(state);
     loadFileToMemory(fileName, state);
 }
 
-void deleteChip8State(Chip8State* state)
+void deleteChip8State(chip8State* state)
 {
     
 }

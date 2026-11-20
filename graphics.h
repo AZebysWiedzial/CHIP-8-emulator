@@ -3,19 +3,21 @@
 
 #include<SDL3/SDL.h>
 
-#include "Chip8State.h"
+#include "chip8State.h"
 
 #define TILE_SIZE 10
 #define WINDOW_TITLE "test"
+#define DEBUGGER_WIDTH 100
 
-typedef struct graphicalContext
+typedef struct graphicsContext
 {
     SDL_Window* window;
     SDL_Renderer* renderer;
-} graphicalContext;
+} graphicsContext;
 
-void initGraphics(graphicalContext* gc, const char* title);
-void updateDisplay(Chip8State* state, graphicalContext* gc);
-void deleteGraphics(graphicalContext* gc);
+void initGraphics(graphicsContext* gc, const char* title);
+void updateDisplay(chip8State* state, graphicsContext* gc);
+void deleteGraphics(graphicsContext* gc);
 void removeExtension(char* str);
+void showPanel(graphicsContext* gc);
 #endif

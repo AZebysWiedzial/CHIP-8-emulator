@@ -3,8 +3,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "Chip8State.h"
+#include "chip8State.h"
 #include "graphics.h"
+#include "debugger.h"
 
 #define KEY_QUIT SDLK_ESCAPE
 #define KEY_RESET SDLK_P
@@ -18,7 +19,7 @@ static const SDL_Scancode keymap[] = {
 
 
 
-void handleEvents(Chip8State* state, bool* quit)
+void handleEvents(chip8State* state, graphicsContext* gc, debuggerState* debugger, bool* quit)
 {
     SDL_Event event;
     while(SDL_PollEvent(&event)) 
@@ -33,8 +34,12 @@ void handleEvents(Chip8State* state, bool* quit)
                 {
                     char fileNameCopy[strlen(state->fileName)];
                     strcpy(fileNameCopy, state->fileName);
-                    printf("File name copy: %s\n", fileNameCopy);
                     resetChip8State(state, fileNameCopy);
+                }
+                if(event.key.key == SDLK_O)
+                {
+                    if(debugger->panelStatus == CLOSED) showDebugger(debugger, gc);
+                    else hidePanel(debugger, gc);
                 }
                 break;
             }
@@ -44,14 +49,14 @@ void handleEvents(Chip8State* state, bool* quit)
         state->inputKeys[i] = keys[keymap[i]];
 }
 
-void loop(Chip8State* state, graphicalContext* gc)
+void loop(chip8State* state, graphicsContext* gc, debuggerState* debugger)
 {
     bool quit = false;
     while(!quit)
     {
         int frameStart = SDL_GetTicks();
 
-        handleEvents(state, &quit);
+        handleEvents(state, gc, debugger, &quit);
 
         // printInputKeys(state);
 
@@ -76,22 +81,19 @@ void loop(Chip8State* state, graphicalContext* gc)
 
 int main(int argc, char* argv[])
 {
-    Chip8State state;
-    initChip8State(&state);
+    chip8State state;
+    initChip8State(&state);    
 
+    graphicsContext gc;
+    initGraphics(&gc, argv[1]);
+
+    debuggerState debugger;
     
-
     loadFileToMemory(argv[1], &state);
     
 
-    graphicalContext gc;
-    initGraphics(&gc, argv[1]);
 
-    // parseNextOpcode(&state);
-    // parseNextOpcode(&state);
-
-
-    loop(&state, &gc);
+    loop(&state, &gc, &debugger);
 
     deleteGraphics(&gc);
     deleteChip8State(&state);

@@ -44,7 +44,7 @@ static const uint8_t keyOrder[KEY_COUNT] = {
     0xA, 0x0, 0xB, 0xF
 };
 
-typedef struct Chip8State {
+typedef struct chip8State {
     uint8_t registers[REGISTER_COUNT]; 
     uint8_t memory[MEMORY_SIZE];
 
@@ -65,22 +65,22 @@ typedef struct Chip8State {
     uint16_t opcode;
 
     char fileName[MAX_FILE_NAME_LENGTH];
-} Chip8State;
+} chip8State;
 
-void initChip8State(Chip8State* state);
-void parseNextOpcode(Chip8State* state);
-void loadFileToMemory(const char* fileName, Chip8State* state);
-void pushPC(Chip8State* state);
-void popPC(Chip8State* state);
-void resetInputKeys(Chip8State* state);
+void initChip8State(chip8State* state);
+void parseNextOpcode(chip8State* state);
+void loadFileToMemory(const char* fileName, chip8State* state);
+void pushPC(chip8State* state);
+void popPC(chip8State* state);
+void resetInputKeys(chip8State* state);
 
-void resetChip8State(Chip8State* state, char* fileName);
-void deleteChip8State(Chip8State* state);
+void resetChip8State(chip8State* state, char* fileName);
+void deleteChip8State(chip8State* state);
 
-void clearDisplay(Chip8State* state);
-void drawSprite(Chip8State* state, uint8_t x, uint8_t y, uint8_t height);
+void clearDisplay(chip8State* state);
+void drawSprite(chip8State* state, uint8_t x, uint8_t y, uint8_t height);
 
 
 
-void printInputKeys(Chip8State* state);
+void printInputKeys(chip8State* state);
 #endif

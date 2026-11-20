@@ -2,17 +2,16 @@
 #include<stdlib.h>
 #include "graphics.h"
 
-void initGraphics(graphicalContext* gc, const char* title)
+void initGraphics(graphicsContext* gc, const char* title)
 {
     SDL_Init(SDL_INIT_VIDEO);
-    char* titleCopy = (char*)malloc(strlen(title));
-    removeExtension((char*)titleCopy);
+    char titleCopy[strlen(title)];
+    removeExtension(titleCopy);
     
     SDL_CreateWindowAndRenderer(title, DISPLAY_WIDTH * TILE_SIZE, DISPLAY_HEIGHT * TILE_SIZE, 0, &gc->window, &gc->renderer);
-    free(titleCopy);
 }
 
-void updateDisplay(Chip8State* state, graphicalContext* gc)
+void updateDisplay(chip8State* state, graphicsContext* gc)
 {
     SDL_SetRenderDrawColor(gc->renderer, 0, 0, 0, 255);
     SDL_RenderClear(gc->renderer);
@@ -39,7 +38,7 @@ void updateDisplay(Chip8State* state, graphicalContext* gc)
     SDL_RenderPresent(gc->renderer);
 }
 
-void deleteGraphics(graphicalContext* gc)
+void deleteGraphics(graphicsContext* gc)
 {
     SDL_DestroyRenderer(gc->renderer);
     SDL_DestroyWindow(gc->window);
@@ -52,3 +51,12 @@ void removeExtension(char* str)
     char* dot = strrchr(str, '.');
     if(dot != NULL) *dot = '\0';
 }
+
+void showPanel(graphicsContext* gc)
+{
+    int newWidth = (DISPLAY_WIDTH * TILE_SIZE) + DEBUGGER_WIDTH;
+    int height = DISPLAY_HEIGHT * TILE_SIZE;
+    
+    SDL_SetWindowSize(gc->window, newWidth, height);
+}
+
