@@ -207,7 +207,7 @@ void parseNextOpcode(chip8State* state)
                     if(!USE_MODERN_INSTRUCTIONS) state->I += secondNibble + 1;
                     break;
                 case 0x65:
-                    for (int i = 0; i <= state->registers[secondNibble]; i++)
+                    for (int i = 0; i <= secondNibble; i++)
                     {
                         state->registers[i] = state->memory[state->I + i];
                     }
