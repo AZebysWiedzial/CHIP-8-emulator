@@ -1,9 +1,8 @@
 #ifndef DEBUGGER_H
 #define DEBUGGER_H
 
-#include "graphics.h"
 #include "chip8State.h"
-// #include <SDL3/SDL.h>
+#include "graphics.h"
 
 
 typedef enum 
@@ -15,6 +14,7 @@ typedef struct debuggerState
 {
     panelStatus panelStatus;
     bool isNextStepRequested;
+    int selectedSetting;
 } debuggerState;
 
 void initDebuggerState(debuggerState* debugger);
@@ -22,6 +22,6 @@ void initDebuggerState(debuggerState* debugger);
 
 void showSettings(debuggerState* debugger, graphicsContext* gc);
 void showDebugger(debuggerState* debugger, graphicsContext* gc);
-void hidePanel(debuggerState* debugger, graphicsContext* gc);
+void hideDebugger(debuggerState* debugger, graphicsContext* gc);
 
 #endif

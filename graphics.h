@@ -1,13 +1,14 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
-#include<SDL3/SDL.h>
 
+#include <SDL3/SDL.h>
 #include "chip8State.h"
+
 
 #define TILE_SIZE 10
 #define WINDOW_TITLE "test"
-#define DEBUGGER_WIDTH 100
+#define DEBUGGER_WIDTH 350
 
 typedef struct graphicsContext
 {
@@ -17,7 +18,11 @@ typedef struct graphicsContext
 
 void initGraphics(graphicsContext* gc, const char* title);
 void updateDisplay(chip8State* state, graphicsContext* gc);
+void updateSettings(chip8State* state, graphicsContext* gc, int selectedSetting);
+void updateDebugger(chip8State* state, graphicsContext* gc);
 void deleteGraphics(graphicsContext* gc);
 void removeExtension(char* str);
 void showPanel(graphicsContext* gc);
+void hidePanel(graphicsContext* gc);
+
 #endif

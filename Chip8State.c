@@ -5,13 +5,13 @@
 #include <stdbool.h>
 #include <time.h>
 
-void initChip8State(chip8State* state)
+void initChip8State(chip8State* state, interpreterSettings settings)
 {
     memset(state, 0, sizeof(*state));
     memcpy(&state->memory[FONT_START], font, sizeof(font));
     state->PC = MEMORY_START;
     state->waitingKey = -1;
-
+    state->settings = settings;
 
     srand(time(NULL));
 }
@@ -107,13 +107,13 @@ void parseNextOpcode(chip8State* state)
                 }
                     
                 case 0x6:
-                    if(!USE_MODERN_INSTRUCTIONS) state->registers[secondNibble] = state->registers[thirdNibble];
+                    if(!state->settings.shiftInPlace) state->registers[secondNibble] = state->registers[thirdNibble];
                     uint8_t shiftedBit = state->registers[secondNibble] & 0x1;
                     state->registers[secondNibble] >>= 1;
                     state->registers[0xF] = shiftedBit;
                     break;
                 case 0xE:
-                    if(!USE_MODERN_INSTRUCTIONS) state->registers[secondNibble] = state->registers[thirdNibble];
+                    if(!state->settings.shiftInPlace) state->registers[secondNibble] = state->registers[thirdNibble];
                     shiftedBit = (state->registers[secondNibble] >> 7) & 0x1;
                     state->registers[secondNibble] <<= 1;
                     state->registers[0xF] = shiftedBit;
@@ -126,7 +126,7 @@ void parseNextOpcode(chip8State* state)
             state->I = secondThirdFourthNibbles;
             break;
         case 0xB:
-            if(!USE_MODERN_INSTRUCTIONS) state->PC = state->registers[0] + secondThirdFourthNibbles;
+            if(!state->settings.takeOffsetValueFromVX) state->PC = state->registers[0] + secondThirdFourthNibbles;
             else state->PC = state->registers[secondNibble] + secondThirdFourthNibbles;
             break;
         case 0xC:
@@ -147,6 +147,7 @@ void parseNextOpcode(chip8State* state)
                     if(!state->inputKeys[state->registers[secondNibble]]) state->PC += 2;
                     break;
                 default:
+                    unknownInstructionError(state->opcode);
                     break;
             }
             break;
@@ -204,21 +205,24 @@ void parseNextOpcode(chip8State* state)
                     {
                         state->memory[state->I + i] = state->registers[i];
                     }
-                    if(!USE_MODERN_INSTRUCTIONS) state->I += secondNibble + 1;
+                    if(!state->settings.useTempIValueForMemory) state->I += secondNibble + 1;
                     break;
                 case 0x65:
                     for (int i = 0; i <= secondNibble; i++)
                     {
                         state->registers[i] = state->memory[state->I + i];
                     }
-                    if(!USE_MODERN_INSTRUCTIONS) state->I += state->registers[secondNibble] + 1;
+                    if(!state->settings.useTempIValueForMemory) state->I += state->registers[secondNibble] + 1;
                     break;
                     
                 default:
+                    unknownInstructionError(state->opcode);
                     break;
             }
             break;
-        
+        default:
+            unknownInstructionError(state->opcode);
+            break;
     }
 }
 
@@ -234,13 +238,7 @@ void popPC(chip8State* state)
     state->stackPointer--;
 }
 
-void resetInputKeys(chip8State* state)
-{
-    for (int i = 0; i < KEY_COUNT; i++)
-    {
-        state->inputKeys[i] = 0;
-    }
-}
+
 
 void loadFileToMemory(const char* fileName, chip8State* state)
 {
@@ -314,11 +312,18 @@ void printInputKeys(chip8State* state)
 
 void resetChip8State(chip8State* state, char* fileName)
 {
-    initChip8State(state);
+    // printf("Before reset: %d %d %d\n", state->settings.shiftInPlace, state->settings.shiftInPlace, state->settings.useTempIValueForMemory);
+    initChip8State(state, state->settings);
     loadFileToMemory(fileName, state);
+    // printf("After reset: %d %d %d\n", state->settings.shiftInPlace, state->settings.shiftInPlace, state->settings.useTempIValueForMemory);
 }
 
 void deleteChip8State(chip8State* state)
 {
     
+}
+
+void unknownInstructionError(uint16_t opcode)
+{
+    printf("Unknown instruction: %X\n", opcode);
 }

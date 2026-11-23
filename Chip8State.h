@@ -2,6 +2,7 @@
 #define CHIP8STATE_H
 
 #include<stdint.h>
+#include <stdbool.h>
 
 #define REGISTER_COUNT 16
 #define MEMORY_SIZE 4096
@@ -44,6 +45,15 @@ static const uint8_t keyOrder[KEY_COUNT] = {
     0xA, 0x0, 0xB, 0xF
 };
 
+typedef struct interpreterSettings {
+    bool shiftInPlace;
+    bool takeOffsetValueFromVX;
+    bool useTempIValueForMemory;
+} interpreterSettings;
+
+static const interpreterSettings modernSettings = {true, true, true};
+static const interpreterSettings classicSettings = {false, false, false};
+
 typedef struct chip8State {
     uint8_t registers[REGISTER_COUNT]; 
     uint8_t memory[MEMORY_SIZE];
@@ -65,14 +75,18 @@ typedef struct chip8State {
     uint16_t opcode;
 
     char fileName[MAX_FILE_NAME_LENGTH];
+
+    interpreterSettings settings;
 } chip8State;
 
-void initChip8State(chip8State* state);
+
+
+
+void initChip8State(chip8State* state, interpreterSettings settings);
 void parseNextOpcode(chip8State* state);
 void loadFileToMemory(const char* fileName, chip8State* state);
 void pushPC(chip8State* state);
 void popPC(chip8State* state);
-void resetInputKeys(chip8State* state);
 
 void resetChip8State(chip8State* state, char* fileName);
 void deleteChip8State(chip8State* state);
@@ -83,4 +97,5 @@ void drawSprite(chip8State* state, uint8_t x, uint8_t y, uint8_t height);
 
 
 void printInputKeys(chip8State* state);
+void unknownInstructionError();
 #endif

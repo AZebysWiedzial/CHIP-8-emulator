@@ -5,6 +5,7 @@ void initDebuggerState(debuggerState* debugger)
 {
     debugger->panelStatus = CLOSED;
     debugger->isNextStepRequested = false;
+    debugger->selectedSetting = 0;
 }
 
 
@@ -21,12 +22,8 @@ void showDebugger(debuggerState* debugger, graphicsContext* gc)
     showPanel(gc);
 }
 
-void hidePanel(debuggerState* debugger, graphicsContext* gc)
+void hideDebugger(debuggerState* debugger, graphicsContext* gc)
 {
     debugger->panelStatus = CLOSED;
-
-    int newWidth = DISPLAY_WIDTH * TILE_SIZE;
-    int height = DISPLAY_HEIGHT * TILE_SIZE;
-    SDL_SetWindowSize(gc->window, newWidth, height);
-
+    hidePanel(gc);
 }
