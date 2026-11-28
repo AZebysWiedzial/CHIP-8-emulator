@@ -17,7 +17,7 @@
 
 #define USE_MODERN_INSTRUCTIONS 1
 
-#define MAX_FILE_NAME_LENGTH 30
+#define MAX_FILE_NAME_LENGTH 100
 
 static const uint8_t font[80] = {
     0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
@@ -73,6 +73,9 @@ typedef struct chip8State {
     uint32_t display[DISPLAY_SIZE];
 
     uint16_t opcode;
+    uint16_t currentInstructionAddress;
+    uint16_t addressToShow;
+    uint8_t stackAddressToShow;
 
     char fileName[MAX_FILE_NAME_LENGTH];
 
@@ -97,5 +100,5 @@ void drawSprite(chip8State* state, uint8_t x, uint8_t y, uint8_t height);
 
 
 void printInputKeys(chip8State* state);
-void unknownInstructionError();
+void unknownInstructionError(uint16_t opcode);
 #endif

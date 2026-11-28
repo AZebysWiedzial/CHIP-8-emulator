@@ -54,7 +54,7 @@ void updateSettings(chip8State* state, graphicsContext* gc, int selectedSetting)
 
     for (int i = 0; i < 3; i++)
     {
-        const int rowY = 32 + i * 24;
+        int rowY = 32 + i * 24;
         if (i == selectedSetting)
         {
             SDL_FRect selection = {panelX, (float)rowY - 4, DEBUGGER_WIDTH, 18};
@@ -91,6 +91,47 @@ void updateDebugger(chip8State* state, graphicsContext* gc)
 
     SDL_RenderDebugTextFormat(gc->renderer, DISPLAY_WIDTH * TILE_SIZE + 20, 260, "Delay timer: %d", state->delayTimer);
     SDL_RenderDebugTextFormat(gc->renderer, DISPLAY_WIDTH * TILE_SIZE + 20, 280, "Sound timer: %d", state->soundTimer);
+
+    //print memory
+    uint16_t currAddress = state->addressToShow;
+    for (int i = 0; i < 10; i++)
+    {
+        char buffer[100];
+        sprintf(buffer, "0x%03X:", currAddress);
+
+        int rowY = 10 + i * 20;
+        for(int j = 0; j < 4 && currAddress < MEMORY_SIZE; j++)
+        {
+            if (currAddress == state->currentInstructionAddress && currAddress + 1 < MEMORY_SIZE)
+            {
+                SDL_FRect selection = {
+                    (float)(DISPLAY_WIDTH * TILE_SIZE + 150 + (8 + j * 4) * 8),
+                    (float)rowY, 24, 8
+                };
+                SDL_SetRenderDrawColor(gc->renderer, 45, 80, 135, 255);
+                SDL_RenderFillRect(gc->renderer, &selection);
+                SDL_SetRenderDrawColor(gc->renderer, 255, 255, 255, 255);
+            }
+
+            sprintf(buffer, "%s  %02x", buffer, state->memory[currAddress]);
+            currAddress++;
+        }
+        SDL_RenderDebugText(gc->renderer, DISPLAY_WIDTH * TILE_SIZE + 150, rowY, buffer);
+
+    }
+
+    uint8_t currStackAddress = state->stackAddressToShow;
+
+    for (int i = 0; i < 4; i++)
+    {
+        char buffer[100];
+        sprintf(buffer, "0x%X: 0x%03x", currStackAddress, state->stack[currStackAddress]);
+        SDL_RenderDebugText(gc->renderer, DISPLAY_WIDTH * TILE_SIZE + 150, 220 + (20 * i), buffer);
+
+
+        currStackAddress++;
+    }
+    // printf("%s\n", buffer);
 }
 
 void deleteGraphics(graphicsContext* gc)

@@ -62,8 +62,6 @@ void render(chip8State* state, graphicsContext* gc, debuggerState* debugger)
     SDL_RenderPresent(gc->renderer);
 }
 
-
-
 void handleEvents(chip8State* state, graphicsContext* gc, debuggerState* debugger, bool* quit, bool* isInDebugMode)
 {
     SDL_Event event;
@@ -93,9 +91,24 @@ void handleEvents(chip8State* state, graphicsContext* gc, debuggerState* debugge
                     if(debugger->panelStatus != SETTINGS) showSettings(debugger, gc);
                     else hideDebugger(debugger, gc);
                 }
-                if(event.key.key == SDLK_RIGHT && *isInDebugMode)
+                if(*isInDebugMode)
                 {
-                    debugger->isNextStepRequested = true;
+                    if(event.key.key == SDLK_RIGHT)
+                    {
+                        debugger->isNextStepRequested = true;
+                    }
+                    if(event.key.key == SDLK_LEFT)
+                    {
+                        if(state->delayTimer > 0) state->delayTimer--;
+                        if(state->soundTimer > 0) state->soundTimer--;
+                    }
+                }
+                if(debugger->panelStatus == DEBUG)
+                {
+                    if(event.key.key == SDLK_UP) state->addressToShow -= 2;
+                    if(event.key.key == SDLK_DOWN) state->addressToShow += 2;
+                    if(event.key.key == SDLK_U && state->stackAddressToShow < STACK_DEPTH - 4) state->stackAddressToShow++;
+                    if(event.key.key == SDLK_J && state->stackAddressToShow > 0) state->stackAddressToShow--;
                 }
                 if(event.key.key == SDLK_L)
                 {

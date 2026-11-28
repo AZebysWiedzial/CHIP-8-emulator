@@ -10,14 +10,17 @@ void initChip8State(chip8State* state, interpreterSettings settings)
     memset(state, 0, sizeof(*state));
     memcpy(&state->memory[FONT_START], font, sizeof(font));
     state->PC = MEMORY_START;
+    state->currentInstructionAddress = MEMORY_START;
     state->waitingKey = -1;
     state->settings = settings;
+    state->addressToShow = MEMORY_START;
 
     srand(time(NULL));
 }
 
 void parseNextOpcode(chip8State* state)
 {
+    state->currentInstructionAddress = state->PC;
     state->opcode = (state->memory[state->PC] << 8) | state->memory[state->PC + 1];
     // printf("%u\n", state->opcode);
 
